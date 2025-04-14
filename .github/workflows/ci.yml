@@ -106,4 +106,4 @@ jobs:
         run: |
           cd CrmTester.Tests
           dotnet build /nowarn:CS8600,CS8602,CS8603,CS8604,CS8618
-          dotnet test --filter "Category=GUI" --environment HEADLESS=true
+          HEADLESS=true dotnet test --filter "TestCategory=GUI"
