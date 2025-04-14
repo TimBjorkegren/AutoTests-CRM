@@ -50,6 +50,8 @@ public class DemoTest : PageTest
         await _page.GetByLabel("Subject").SelectOptionAsync("Skada");
 
         await _page.GetByRole(AriaRole.Button, new() { Name = "Create issue" }).ClickAsync();
+
+        //Was suppose to use the alert that comes up to verify it but it won't show up on the playwright tests
     }
 
     [TestMethod]
@@ -138,31 +140,32 @@ public class DemoTest : PageTest
         }
     }
 
-    [TestMethod]
-    public async Task RegisterCompanyAccount()
-    {
-        await _page.GotoAsync("http://localhost:5173/register");
-
-        await _page.GetByPlaceholder("Email").FillAsync("tim.bjorkegren@gmail.com");
-        await _page.GetByPlaceholder("Password").FillAsync("abc123");
-        await _page.GetByPlaceholder("Username").FillAsync("timtim");
-        await _page.GetByPlaceholder("Company").FillAsync("MikroMjuk");
-
-        await _page.GetByRole(AriaRole.Button, new() { Name = "Skapa konto" }).ClickAsync();
-
-        var errorMessageAlert = _page.Locator("text=Company already exists.");
-
-        bool accountAlreadyExist = await errorMessageAlert.IsVisibleAsync();
-
-        if (accountAlreadyExist)
+    /*
+        [TestMethod]
+        public async Task RegisterCompanyAccount()
         {
-            Console.WriteLine("The account already exists");
-        }
-        else
-        {
-            Console.WriteLine("New account was registered");
-        }
-    }
+            await _page.GotoAsync("http://localhost:5173/register");
+    
+            await _page.GetByPlaceholder("Email").FillAsync("tim.bjorkegren@gmail.com");
+            await _page.GetByPlaceholder("Password").FillAsync("abc123");
+            await _page.GetByPlaceholder("Username").FillAsync("timtim");
+            await _page.GetByPlaceholder("Company").FillAsync("MikroMjuk");
+    
+            await _page.GetByRole(AriaRole.Button, new() { Name = "Skapa konto" }).ClickAsync();
+    
+            var errorMessageAlert = _page.Locator("text=Company already exists.");
+    
+            bool accountAlreadyExist = await errorMessageAlert.IsVisibleAsync();
+    
+            if (accountAlreadyExist)
+            {
+                Console.WriteLine("The account already exists");
+            }
+            else
+            {
+                Console.WriteLine("New account was registered");
+            }
+        } */
 
     [TestMethod]
     public async Task LoginWithNoPasswordShouldNotWork()

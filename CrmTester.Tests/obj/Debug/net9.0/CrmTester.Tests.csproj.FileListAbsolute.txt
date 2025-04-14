@@ -507,3 +507,4 @@ C:\Users\timbj\repos\crmsystemetTester\CrmTester.Tests\obj\Debug\net9.0\refint\C
 C:\Users\timbj\repos\crmsystemetTester\CrmTester.Tests\obj\Debug\net9.0\CrmTester.Tests.pdb
 C:\Users\timbj\repos\crmsystemetTester\CrmTester.Tests\obj\Debug\net9.0\CrmTester.Tests.genruntimeconfig.cache
 C:\Users\timbj\repos\crmsystemetTester\CrmTester.Tests\obj\Debug\net9.0\ref\CrmTester.Tests.dll
+C:\Users\timbj\repos\crmsystemetTester\CrmTester.Tests\obj\Debug\net9.0\CrmTester.Tests.sourcelink.json

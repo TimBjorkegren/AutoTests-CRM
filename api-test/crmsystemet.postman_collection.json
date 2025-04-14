@@ -1,0 +1,1351 @@
+{
+	"info": {
+		"_postman_id": "a2b57c49-d099-4af0-a4c2-7bbb3797f30b",
+		"name": "crmsystemet",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43593995",
+		"_collection_link": "https://timbjorkegren-4394261.postman.co/workspace/Tim-Bjorkegren's-Workspace~1c478070-8fa6-443a-8269-c59bbc03b404/collection/43593995-a2b57c49-d099-4af0-a4c2-7bbb3797f30b?action=share&source=collection_link&creator=43593995"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "Login as User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Statuskoden ska vara 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Email\": \"no@email.com\",\r\n    \"Password\": \"abc123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout as user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Statuskoden ska vara 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Session cleared\", function (){\r",
+									"    pm.expect(pm.response.text()).to.include(\"Session cleared\");\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login as guest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Statuskoden ska vara 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const responseBody = pm.response.json();\r",
+									"pm.test(\"Reponse body answered role as guest\", function(){\r",
+									"    pm.expect(responseBody.role).to.eql(\"GUEST\");\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Email\": \"testlol@gmai.com\",\r\n    \"ChatId\": \"847f9210-0b52-43c7-b781-51d9cdb698a9\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/login/guest",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"login",
+								"guest"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout as guest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Statuskoden ska vara 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Session cleared\", function (){\r",
+									"    pm.expect(pm.response.text()).to.include(\"Session cleared\");\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login as admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Statuskoden ska vara 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const responseBody = pm.response.json();\r",
+									"\r",
+									"pm.test(\"response body have the right fields included\", function (){\r",
+									"    pm.expect(responseBody).to.have.property(\"username\");\r",
+									"    pm.expect(responseBody).to.have.property(\"role\");\r",
+									"    pm.expect(responseBody).to.have.property(\"company\");\r",
+									"    pm.expect(responseBody.role).to.equal(\"ADMIN\");\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Email\": \"m@email.com\",\r\n    \"Password\": \"abc123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create employee",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Statuskoden ska vara 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User is registerd\", function(){\r",
+									"    pm.expect(pm.response.text()).to.include(\"User registered.\");\r",
+									"})\r",
+									"\r",
+									"const requestBody = pm.request.body.raw;\r",
+									"\r",
+									"const jsonData = JSON.parse(requestBody);\r",
+									"pm.environment.set(\"userEmail\", jsonData.Email);\r",
+									"console.log(\"Email saved:\", jsonData.Email);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Firstname\": \"Timmylol\",\r\n    \"Lastname\": \"bjorklol\",\r\n    \"Email\": \"Timmytest123@gmail.com\",\r\n    \"Role\": \"USER\",\r\n    \"Password\": \"abc123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get employees from your company",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let responseBody = pm.response.json();\r",
+									"let workers = responseBody.employees.map(employees => employees.id);\r",
+									"let workersCount = workers.length;\r",
+									"\r",
+									"pm.test(\"Statuskoden ska vara 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain employees\", function () {\r",
+									"    pm.expect(responseBody).to.have.property(\"employees\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Employees should have correct properties\", function () {\r",
+									"    pm.expect(responseBody.employees[0]).to.have.property(\"id\");\r",
+									"    pm.expect(responseBody.employees[0]).to.have.property(\"username\");\r",
+									"    pm.expect(responseBody.employees[0]).to.have.property(\"firstname\");\r",
+									"    pm.expect(responseBody.employees[0]).to.have.property(\"lastname\");\r",
+									"    pm.expect(responseBody.employees[0]).to.have.property(\"email\");\r",
+									"    pm.expect(responseBody.employees[0]).to.have.property(\"role\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Includes a list of employyes\", function(){\r",
+									"    pm.expect(responseBody.employees).to.have.lengthOf(workersCount);\r",
+									"});\r",
+									"\r",
+									"const targetEmail = pm.environment.get(\"userEmail\");\r",
+									"const users = responseBody.employees;\r",
+									"const targetUser = users.find(user => user.email === targetEmail);\r",
+									"\r",
+									"if (targetUser){\r",
+									"    pm.environment.set(\"userId\", targetUser.id);\r",
+									"    console.log(`Found user id = ${targetUser.id} Email = ${targetUser.email}`);\r",
+									"}\r",
+									"else {\r",
+									"    console.error(\"couldn't find the userID\");\r",
+									"    throw new Error(\"user not found in response\");\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/users/bycompany",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"bycompany"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"User deleted\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/{{userId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Statuskoden ska vara 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const responseBody = pm.response.json();\r",
+									"pm.test(\"Response body included your role\", function(){\r",
+									"    pm.expect(responseBody).to.have.property(\"role\");\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/login/role",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"login",
+								"role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get who's logged in",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Statuskoden ska vara 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const responseBody = pm.response.json();\r",
+									"pm.test(\"Reponse body includes information about who's logged in\", function(){\r",
+									"    pm.expect(responseBody).to.have.property(\"username\");\r",
+									"    pm.expect(responseBody.username).to.be.a(\"string\").and.to.have.lengthOf.at.least(1);\r",
+									"\r",
+									"    pm.expect(responseBody).to.have.property(\"role\");\r",
+									"    if(responseBody.role !== \"\") {\r",
+									"        pm.expect(responseBody.role).to.be.a(\"string\").and.to.have.lengthOf.at.least(1);\r",
+									"    }\r",
+									"\r",
+									"    pm.expect(responseBody).to.have.property(\"company\");\r",
+									"    pm.expect(responseBody.company).to.be.a(\"string\").and.to.have.lengthOf.at.least(1);\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Statuskoden ska vara 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User updated successfully\", function(){\r",
+									"    pm.expect(pm.response.text()).to.include(\"User updated successfully.\");\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"Firstname\": \"Kalle\",\r\n  \"Lastname\": \"Bjork\",\r\n  \"Email\": \"emailtest@gmail.com\",\r\n  \"Role\": \"ADMIN\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"7"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Login as admin and user if one is already signed in error \"400\" bad request will be shown.\n\nCreate employee \"POST\" creates a employee and a message will pop up if the user already exists."
+		},
+		{
+			"name": "Tickets",
+			"item": [
+				{
+					"name": "Get issues for your company",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Added script to define the $ variable\r",
+									"pm.test(\"Statuskoden ska vara 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let response = pm.response.json();\r",
+									"console.log(response)\r",
+									"\r",
+									"let issueIds = response.issues.map(issues => issues.id);\r",
+									"\r",
+									"pm.environment.set(\"all_issue_ids\", JSON.stringify(issueIds)); \r",
+									"\r",
+									"let newIssueTitle = response.issues.map(issues => issues.title);\r",
+									"\r",
+									"let targetTitle = pm.environment.get(\"targetTitle\");\r",
+									"\r",
+									"if (newIssueTitle.includes(targetTitle)){\r",
+									"    console.log(`Title found ${targetTitle}`);\r",
+									"    pm.environment.set(\"targetTitleFound\", \"true\");\r",
+									"} else {\r",
+									"    console.log(`Title not found ${targetTitle}`);\r",
+									"    pm.environment.set(\"targetTitleFound\", \"false\")\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/issues",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"issues"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create a issue",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Added script to define the $ variable before using it in the test\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let targetTitleCheck = pm.environment.get(\"targetTitleFound\");\r",
+									"console.log(`current value found is ${targetTitleCheck} in the environment variable`);\r",
+									"\r",
+									"pm.test(\"Target title exist in the system\", function() {\r",
+									"    pm.expect(targetTitleCheck).to.eql(\"true\");\r",
+									"});\r",
+									"\r",
+									"if (targetTitleCheck === \"true\"){\r",
+									"    console.log(\"it was found\")\r",
+									"} else{\r",
+									"    console.log(\"it was not found\")\r",
+									"};\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let requestBody = JSON.parse(pm.request.body.raw);\r",
+									"let targetTitle = requestBody.Title;\r",
+									"\r",
+									"pm.environment.set(\"targetTitle\", targetTitle);\r",
+									"console.log(targetTitle);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Email\": \"tim.bjorkegren@gmail.com\",\r\n    \"Title\": \"Test for postman TEST1111\",\r\n    \"Subject\": \"Övrigt\",\r\n    \"Message\": \"Test for postman tim bjorkegren\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/issues/create/Demo%20AB",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"issues",
+								"create",
+								"Demo%20AB"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a specific issue",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Statuskoden ska vara 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									"let ids = JSON.parse(pm.environment.get(\"all_issue_ids\"));\r",
+									"let currentIndex = parseInt(pm.environment.get(\"current_index\")) || 0;\r",
+									"\r",
+									"if (currentIndex < ids.length) {\r",
+									"    // Get the current ID\r",
+									"    let currentId = ids[currentIndex];\r",
+									"    \r",
+									"    // Set the current ID in environment\r",
+									"    pm.environment.set(\"current_id\", currentId);\r",
+									"    \r",
+									"    // Increment index for next run\r",
+									"    pm.environment.set(\"current_index\", currentIndex + 1);\r",
+									"    \r",
+									"} else {\r",
+									"    console.log(\"All IDs have been processed.\");\r",
+									"     pm.environment.set(\"current_index\", 0);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/issues/{{current_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"issues",
+								"{{current_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get message from issue id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Statuskoden ska vara 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/issues/aae0fb2a-6b8a-4d96-8b69-65567efbdfab/messages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"issues",
+								"aae0fb2a-6b8a-4d96-8b69-65567efbdfab",
+								"messages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update state on issue",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Statuskoden ska vara 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"NewState\": \"CLOSED\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/issues/95174724-b419-457e-b2d9-1cfdb0e382f3/state",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"issues",
+								"95174724-b419-457e-b2d9-1cfdb0e382f3",
+								"state"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "\"Make a issue\" POST = Makes a issue/ticket with the formdata it expects\n\n\"Get issues for your company\" \"GET\" = gets all the tickets/issues thats for the specific company you are logged into"
+		},
+		{
+			"name": "Forms",
+			"item": [
+				{
+					"name": "Create a new subject",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Statuskoden ska vara 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Subject was created\", function(){\r",
+									"    pm.expect(pm.response.text()).to.include(\"Subject was successfully created.\");\r",
+									"});\r",
+									"\r",
+									"const requestBody = pm.request.body.raw;\r",
+									"\r",
+									"const jsonData = JSON.parse(requestBody);\r",
+									"pm.environment.set(\"subject\", jsonData.Name);\r",
+									"console.log(\"subject saved:\", jsonData.Name);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\": \"MatVaror123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/forms/subjects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"forms",
+								"subjects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update subjects",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Statuskoden ska vara 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Subject was updated\", function(){\r",
+									"    pm.expect(pm.response.text()).to.include(\"Subject was updated.\");\r",
+									"})\r",
+									"\r",
+									"const requestBody = pm.request.body.raw;\r",
+									"\r",
+									"const jsonData = JSON.parse(requestBody);\r",
+									"pm.environment.set(\"newNamedSubject\", jsonData.NewName);\r",
+									"console.log(\"newNamedSubject saved:\", jsonData.NewName);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"OldName\": \"{{subject}}\",\r\n    \"NewName\": \"Sweaters\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/forms/subjects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"forms",
+								"subjects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a specific subject",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Statuskoden ska vara 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Subject was deleted\", function(){\r",
+									"    pm.expect(pm.response.text()).to.include(\"Subject was deleted.\");\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/forms/subjects/{{newNamedSubject}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"forms",
+								"subjects",
+								"{{newNamedSubject}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all the subjects",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Statuskoden ska vara 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let responseData = pm.response.json();\r",
+									"let subjectCount = responseData.subjects.length;\r",
+									"console.log(subjectCount);\r",
+									"\r",
+									"pm.test(\"A list of subjects should be returned\", function () {\r",
+									"    pm.expect(responseData.subjects).to.have.lengthOf(subjectCount);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Reponse is json\", function(){\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Reponse include subjects array\", function(){\r",
+									"    pm.expect(responseData).to.have.property('subjects');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/forms/subjects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"forms",
+								"subjects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all companies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Statuskoden ska vara 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Includes a list of companies\",function(){\r",
+									"    var responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.companies).to.include.members([\"Demo AB\", \"Test AB\"]);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Reponse is json\", function(){\r",
+									"    pm.response.to.be.json;\r",
+									"})\r",
+									"\r",
+									"let responseData = pm.response.json();\r",
+									"pm.environment.set(\"allCompanies\", JSON.stringify(responseData.companies));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/companies",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"companies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a form from a specific company",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Statuskoden ska vara 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"try {\r",
+									"    \r",
+									"const companiesJson = pm.environment.get(\"allCompanies\");\r",
+									"if (!companiesJson) throw new Error (\"allCompanies not found in environment\")\r",
+									"\r",
+									"const companies = JSON.parse(companiesJson);\r",
+									"if (!Array.isArray(companies)) throw new Error(\"allCompanies is not a array\");\r",
+									"\r",
+									"\r",
+									"let currentIndex = parseInt(pm.environment.get(\"current_indexOfCompanies\"));\r",
+									"if (isNaN(currentIndex) || currentIndex >= companies.length){\r",
+									"    currentIndex = 0;\r",
+									"}\r",
+									"    const companyName = companies[currentIndex];\r",
+									"    pm.environment.set(\"currentCompanyName\", companyName)\r",
+									"    pm.environment.set(\"current_indexOfCompanies\", currentIndex + 1);\r",
+									"    \r",
+									"\r",
+									"} catch (error) {\r",
+									"    console.error(\"Processing failed:\", error.message);\r",
+									"    pm.environment.set(\"currentCompanyName\", \"ERROR: \" + error.message);\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/forms/{{currentCompanyName}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"forms",
+								"{{currentCompanyName}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Server",
+			"item": [
+				{
+					"name": "Server status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Statuskoden ska vara 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Logout before tests end",
+			"item": [
+				{
+					"name": "logout before test ends",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Statuskoden ska vara 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Session cleared\", function (){\r",
+									"    pm.expect(pm.response.text()).to.include(\"Session cleared\");\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
