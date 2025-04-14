@@ -97,9 +97,10 @@ jobs:
 
       - name: Start server
         run: |
-          cd crmsystem/server 
-          nohup dotnet run 
-          sleep 10
+          cd crmsystem/server
+          nohup dotnet run > server.log 2>&1 &
+          sleep 15  # Wait for server to start
+
 
       - name: Run GUI-tests
         run: |
