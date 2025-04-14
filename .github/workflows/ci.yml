@@ -5,7 +5,6 @@ on:
     branches: ["main"]
 
 jobs:
-  # Name of the job/test
   api_tests:
     runs-on: ubuntu-latest
     steps:
@@ -33,12 +32,28 @@ jobs:
         run: |
           cd crmsystem
           dotnet build
-        
+
       - name: Start Server
-        run: cd crmsystem/server && nohup dotnet run &
+        run: |
+          cd crmsystem/server && nohup dotnet run &
+        
+      - name: Wait for the server to start
+        run: |
+          timeout=0
+          until curl --silent --fail http://localhost:5000; do
+            echo "Waiting for server to start..."
+            sleep 5
+            timeout=$((timeout+5))
+            if [ $timeout -ge 60 ]; then
+              echo "Server startup timed out"
+              exit 1
+            fi
+          done
+          echo "Server started successfully!"
 
       - name: Run API-Tests
-        run: newman run ./api-test/crmsystemet.postman_collection.json
+        run: newman run ./api-test/crmsystemet.postman_collection.json --verbose
+
 
   gui_tests:
     runs-on: ubuntu-latest
