@@ -2,7 +2,7 @@ name: CI/CD Test
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main"] 
 
 jobs:
   api_tests:

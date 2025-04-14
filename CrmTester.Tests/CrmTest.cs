@@ -22,7 +22,7 @@ public class DemoTest : PageTest
             new BrowserTypeLaunchOptions
             {
                 Headless = isHeadless,
-                SlowMo = 1000, // Lägger in en fördröjning så vi kan se vad som händer
+                SlowMo = 1000, // Lägger in en fördröjning så vi kan se vad som händerr
             }
         );
         _browserContext = await _browser.NewContextAsync();
