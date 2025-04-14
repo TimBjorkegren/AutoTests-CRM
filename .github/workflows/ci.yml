@@ -105,4 +105,4 @@ jobs:
       - name: Run GUI-tests
         run: |
           cd CrmTester.Tests
-          dotnet test
+          dotnet test --filter "Category=GUI" --environment HEADLESS=true
