@@ -272,9 +272,9 @@
 									"    pm.expect(pm.response.text()).to.include(\"User registered.\");\r",
 									"})\r",
 									"\r",
-									"const requestBody = pm.request.body.raw;\r",
+									"let requestBody = pm.request.body.raw;\r",
 									"\r",
-									"const jsonData = JSON.parse(requestBody);\r",
+									"let jsonData = JSON.parse(requestBody);\r",
 									"pm.environment.set(\"userEmail\", jsonData.Email);\r",
 									"console.log(\"Email saved:\", jsonData.Email);"
 								],
@@ -353,9 +353,9 @@
 									"    pm.expect(responseBody.employees).to.have.lengthOf(workersCount);\r",
 									"});\r",
 									"\r",
-									"const targetEmail = pm.environment.get(\"userEmail\");\r",
-									"const users = responseBody.employees;\r",
-									"const targetUser = users.find(user => user.email === targetEmail);\r",
+									"let targetEmail = pm.environment.get(\"userEmail\");\r",
+									"let users = responseBody.employees;\r",
+									"let targetUser = users.find(user => user.email === targetEmail);\r",
 									"\r",
 									"if (targetUser){\r",
 									"    pm.environment.set(\"userId\", targetUser.id);\r",
@@ -456,7 +456,7 @@
 									"    pm.response.to.have.status(200);\r",
 									"});\r",
 									"\r",
-									"const responseBody = pm.response.json();\r",
+									"let responseBody = pm.response.json();\r",
 									"pm.test(\"Response body included your role\", function(){\r",
 									"    pm.expect(responseBody).to.have.property(\"role\");\r",
 									"})\r",
@@ -509,7 +509,7 @@
 									"    pm.response.to.have.status(200);\r",
 									"});\r",
 									"\r",
-									"const responseBody = pm.response.json();\r",
+									"let responseBody = pm.response.json();\r",
 									"pm.test(\"Reponse body includes information about who's logged in\", function(){\r",
 									"    pm.expect(responseBody).to.have.property(\"username\");\r",
 									"    pm.expect(responseBody.username).to.be.a(\"string\").and.to.have.lengthOf.at.least(1);\r",
@@ -526,6 +526,13 @@
 								],
 								"type": "text/javascript",
 								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"packages": {},
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -929,9 +936,9 @@
 									"    pm.expect(pm.response.text()).to.include(\"Subject was successfully created.\");\r",
 									"});\r",
 									"\r",
-									"const requestBody = pm.request.body.raw;\r",
+									"let requestBody = pm.request.body.raw;\r",
 									"\r",
-									"const jsonData = JSON.parse(requestBody);\r",
+									"let jsonData = JSON.parse(requestBody);\r",
 									"pm.environment.set(\"subject\", jsonData.Name);\r",
 									"console.log(\"subject saved:\", jsonData.Name);"
 								],
@@ -983,14 +990,21 @@
 									"    pm.expect(pm.response.text()).to.include(\"Subject was updated.\");\r",
 									"})\r",
 									"\r",
-									"const requestBody = pm.request.body.raw;\r",
+									"let requestBody = pm.request.body.raw;\r",
 									"\r",
-									"const jsonData = JSON.parse(requestBody);\r",
+									"let jsonData = JSON.parse(requestBody);\r",
 									"pm.environment.set(\"newNamedSubject\", jsonData.NewName);\r",
 									"console.log(\"newNamedSubject saved:\", jsonData.NewName);"
 								],
 								"type": "text/javascript",
 								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"packages": {},
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -1205,10 +1219,10 @@
 								"exec": [
 									"try {\r",
 									"    \r",
-									"const companiesJson = pm.environment.get(\"allCompanies\");\r",
+									"let companiesJson = pm.environment.get(\"allCompanies\");\r",
 									"if (!companiesJson) throw new Error (\"allCompanies not found in environment\")\r",
 									"\r",
-									"const companies = JSON.parse(companiesJson);\r",
+									"let companies = JSON.parse(companiesJson);\r",
 									"if (!Array.isArray(companies)) throw new Error(\"allCompanies is not a array\");\r",
 									"\r",
 									"\r",
@@ -1216,7 +1230,7 @@
 									"if (isNaN(currentIndex) || currentIndex >= companies.length){\r",
 									"    currentIndex = 0;\r",
 									"}\r",
-									"    const companyName = companies[currentIndex];\r",
+									"    let companyName = companies[currentIndex];\r",
 									"    pm.environment.set(\"currentCompanyName\", companyName)\r",
 									"    pm.environment.set(\"current_indexOfCompanies\", currentIndex + 1);\r",
 									"    \r",
