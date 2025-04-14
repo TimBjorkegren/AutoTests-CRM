@@ -414,7 +414,7 @@ public class DemoTest : PageTest
     public async Task LoginOnDifferentCompany_ToNotSeEmployee_FromAnotherCompany()
     {
         await _page.GotoAsync("http://localhost:5173/login");
-        await _page.GetByPlaceholder("Email").FillAsync("testy@gmail.com");
+        await _page.GetByPlaceholder("Email").FillAsync("test@gmail.com");
         await _page.GetByPlaceholder("Password").FillAsync("abc123");
         await _page.GetByRole(AriaRole.Button, new() { Name = "Login" }).ClickAsync();
 
