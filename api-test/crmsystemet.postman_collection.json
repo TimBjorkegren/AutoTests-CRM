@@ -629,6 +629,85 @@
 			"name": "Tickets",
 			"item": [
 				{
+					"name": "create a issue",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"issue was created\", function(){\r",
+									"    let jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.message).to.eql(\"Issue was created successfully.\");\r",
+									"})\r",
+									"/*\r",
+									"let targetTitleCheck = pm.environment.get(\"targetTitleFound\");\r",
+									"console.log(`current value found is ${targetTitleCheck} in the environment variable`);\r",
+									"\r",
+									"pm.test(\"Target title exist in the system\", function() {\r",
+									"    pm.expect(targetTitleCheck).to.eql(\"true\");\r",
+									"});\r",
+									"\r",
+									"if (targetTitleCheck === \"true\"){\r",
+									"    console.log(\"it was found\")\r",
+									"} else{\r",
+									"    console.log(\"it was not found\")\r",
+									"}; */\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let requestBodyIssue = JSON.parse(pm.request.body.raw);\r",
+									"let targetTitle = requestBodyIssue.Title;\r",
+									"\r",
+									"pm.environment.set(\"targetTitle\", targetTitle);\r",
+									"console.log(targetTitle);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Email\": \"tim.bjorkegren@gmail.com\",\r\n    \"Title\": \"Test for postman TEST1111\",\r\n    \"Subject\": \"Övrigt\",\r\n    \"Message\": \"Test for postman tim bjorkegren\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/issues/create/Demo%20AB",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"issues",
+								"create",
+								"Demo%20AB"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get issues for your company",
 					"event": [
 						{
@@ -658,6 +737,10 @@
 									"    console.log(`Title not found ${targetTitle}`);\r",
 									"    pm.environment.set(\"targetTitleFound\", \"false\")\r",
 									"}\r",
+									"\r",
+									"pm.test(\"Create issue was found here\", function(){\r",
+									"    pm.expect(pm.environment.get(\"targetTitleFound\")).to.eql(\"true\");   \r",
+									"})\r",
 									""
 								],
 								"type": "text/javascript",
@@ -706,80 +789,6 @@
 					"response": []
 				},
 				{
-					"name": "create a issue",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"let targetTitleCheck = pm.environment.get(\"targetTitleFound\");\r",
-									"console.log(`current value found is ${targetTitleCheck} in the environment variable`);\r",
-									"\r",
-									"pm.test(\"Target title exist in the system\", function() {\r",
-									"    pm.expect(targetTitleCheck).to.eql(\"true\");\r",
-									"});\r",
-									"\r",
-									"if (targetTitleCheck === \"true\"){\r",
-									"    console.log(\"it was found\")\r",
-									"} else{\r",
-									"    console.log(\"it was not found\")\r",
-									"};\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"let requestBody = JSON.parse(pm.request.body.raw);\r",
-									"let targetTitle = requestBody.Title;\r",
-									"\r",
-									"pm.environment.set(\"targetTitle\", targetTitle);\r",
-									"console.log(targetTitle);"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"Email\": \"tim.bjorkegren@gmail.com\",\r\n    \"Title\": \"Test for postman TEST1111\",\r\n    \"Subject\": \"Övrigt\",\r\n    \"Message\": \"Test for postman tim bjorkegren\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3000/api/issues/create/Demo%20AB",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"issues",
-								"create",
-								"Demo%20AB"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Get a specific issue",
 					"event": [
 						{
@@ -804,13 +813,10 @@
 									"let currentIndex = parseInt(pm.environment.get(\"current_index\")) || 0;\r",
 									"\r",
 									"if (currentIndex < ids.length) {\r",
-									"    // Get the current ID\r",
 									"    let currentId = ids[currentIndex];\r",
 									"    \r",
-									"    // Set the current ID in environment\r",
 									"    pm.environment.set(\"current_id\", currentId);\r",
 									"    \r",
-									"    // Increment index for next run\r",
 									"    pm.environment.set(\"current_index\", currentIndex + 1);\r",
 									"    \r",
 									"} else {\r",
