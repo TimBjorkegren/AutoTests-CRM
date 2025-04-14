@@ -92,10 +92,10 @@ jobs:
         run: cd server && nohup dotnet run &
       - name: Start frontend server
         run: |
-        cd crmsystem/client
-        npm ci
-        nohup npm run dev > vite.log 2>&1 &
-        sleep 5
-        cat vite.log
+          cd crmsystem/client
+          npm ci
+          nohup npm run dev > vite.log 2>&1 &
+          sleep 5
+          cat vite.log
       - name: Run GUI-tests
         run: cd CrmTester.Tests && dotnet test         
