@@ -17,11 +17,10 @@ public class DemoTest : PageTest
     {
         _playwright = await Microsoft.Playwright.Playwright.CreateAsync();
 
-        var isHeadless = Environment.GetEnvironmentVariable("HEADLESS") == "true";
         _browser = await _playwright.Chromium.LaunchAsync(
             new BrowserTypeLaunchOptions
             {
-                Headless = isHeadless,
+                Headless = true,
                 SlowMo = 1000, // Lägger in en fördröjning så vi kan se vad som händerr
             }
         );
