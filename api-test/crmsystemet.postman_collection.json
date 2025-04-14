@@ -117,10 +117,20 @@
 									"    pm.response.to.have.status(200);\r",
 									"});\r",
 									"\r",
-									"const responseBody = pm.response.json();\r",
+									"let responseBodyGuest = pm.response.json();\r",
 									"pm.test(\"Reponse body answered role as guest\", function(){\r",
-									"    pm.expect(responseBody.role).to.eql(\"GUEST\");\r",
+									"    pm.expect(responseBodyGuest.role).to.eql(\"GUEST\");\r",
 									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -205,13 +215,13 @@
 									"    pm.response.to.have.status(200);\r",
 									"});\r",
 									"\r",
-									"const responseBody = pm.response.json();\r",
+									"let responseBodyAdmin = pm.response.json();\r",
 									"\r",
 									"pm.test(\"response body have the right fields included\", function (){\r",
-									"    pm.expect(responseBody).to.have.property(\"username\");\r",
-									"    pm.expect(responseBody).to.have.property(\"role\");\r",
-									"    pm.expect(responseBody).to.have.property(\"company\");\r",
-									"    pm.expect(responseBody.role).to.equal(\"ADMIN\");\r",
+									"    pm.expect(responseBodyAdmin).to.have.property(\"username\");\r",
+									"    pm.expect(responseBodyAdmin).to.have.property(\"role\");\r",
+									"    pm.expect(responseBodyAdmin).to.have.property(\"company\");\r",
+									"    pm.expect(responseBodyAdmin.role).to.equal(\"ADMIN\");\r",
 									"})\r",
 									""
 								],
@@ -328,8 +338,8 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"let responseBody = pm.response.json();\r",
-									"let workers = responseBody.employees.map(employees => employees.id);\r",
+									"let responseBodyCompanies = pm.response.json();\r",
+									"let workers = responseBodyCompanies.employees.map(employees => employees.id);\r",
 									"let workersCount = workers.length;\r",
 									"\r",
 									"pm.test(\"Statuskoden ska vara 200\", function () {\r",
@@ -337,24 +347,24 @@
 									"});\r",
 									"\r",
 									"pm.test(\"Response should contain employees\", function () {\r",
-									"    pm.expect(responseBody).to.have.property(\"employees\");\r",
+									"    pm.expect(responseBodyCompanies).to.have.property(\"employees\");\r",
 									"});\r",
 									"\r",
 									"pm.test(\"Employees should have correct properties\", function () {\r",
-									"    pm.expect(responseBody.employees[0]).to.have.property(\"id\");\r",
-									"    pm.expect(responseBody.employees[0]).to.have.property(\"username\");\r",
-									"    pm.expect(responseBody.employees[0]).to.have.property(\"firstname\");\r",
-									"    pm.expect(responseBody.employees[0]).to.have.property(\"lastname\");\r",
-									"    pm.expect(responseBody.employees[0]).to.have.property(\"email\");\r",
-									"    pm.expect(responseBody.employees[0]).to.have.property(\"role\");\r",
+									"    pm.expect(responseBodyCompanies.employees[0]).to.have.property(\"id\");\r",
+									"    pm.expect(responseBodyCompanies.employees[0]).to.have.property(\"username\");\r",
+									"    pm.expect(responseBodyCompanies.employees[0]).to.have.property(\"firstname\");\r",
+									"    pm.expect(responseBodyCompanies.employees[0]).to.have.property(\"lastname\");\r",
+									"    pm.expect(responseBodyCompanies.employees[0]).to.have.property(\"email\");\r",
+									"    pm.expect(responseBodyCompanies.employees[0]).to.have.property(\"role\");\r",
 									"});\r",
 									"\r",
 									"pm.test(\"Includes a list of employyes\", function(){\r",
-									"    pm.expect(responseBody.employees).to.have.lengthOf(workersCount);\r",
+									"    pm.expect(responseBodyCompanies.employees).to.have.lengthOf(workersCount);\r",
 									"});\r",
 									"\r",
 									"let targetEmail = pm.environment.get(\"userEmail\");\r",
-									"let users = responseBody.employees;\r",
+									"let users = responseBodyCompanies.employees;\r",
 									"let targetUser = users.find(user => user.email === targetEmail);\r",
 									"\r",
 									"if (targetUser){\r",
@@ -456,14 +466,21 @@
 									"    pm.response.to.have.status(200);\r",
 									"});\r",
 									"\r",
-									"let responseBody = pm.response.json();\r",
+									"let responseBodyRole = pm.response.json();\r",
 									"pm.test(\"Response body included your role\", function(){\r",
-									"    pm.expect(responseBody).to.have.property(\"role\");\r",
+									"    pm.expect(responseBodyRole).to.have.property(\"role\");\r",
 									"})\r",
 									""
 								],
 								"type": "text/javascript",
 								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"packages": {},
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -509,18 +526,18 @@
 									"    pm.response.to.have.status(200);\r",
 									"});\r",
 									"\r",
-									"let responseBody = pm.response.json();\r",
+									"let responseBodyLogin = pm.response.json();\r",
 									"pm.test(\"Reponse body includes information about who's logged in\", function(){\r",
-									"    pm.expect(responseBody).to.have.property(\"username\");\r",
-									"    pm.expect(responseBody.username).to.be.a(\"string\").and.to.have.lengthOf.at.least(1);\r",
+									"    pm.expect(responseBodyLogin).to.have.property(\"username\");\r",
+									"    pm.expect(responseBodyLogin.username).to.be.a(\"string\").and.to.have.lengthOf.at.least(1);\r",
 									"\r",
-									"    pm.expect(responseBody).to.have.property(\"role\");\r",
-									"    if(responseBody.role !== \"\") {\r",
-									"        pm.expect(responseBody.role).to.be.a(\"string\").and.to.have.lengthOf.at.least(1);\r",
+									"    pm.expect(responseBodyLogin).to.have.property(\"role\");\r",
+									"    if(responseBodyLogin.role !== \"\") {\r",
+									"        pm.expect(responseBodyLogin.role).to.be.a(\"string\").and.to.have.lengthOf.at.least(1);\r",
 									"    }\r",
 									"\r",
-									"    pm.expect(responseBody).to.have.property(\"company\");\r",
-									"    pm.expect(responseBody.company).to.be.a(\"string\").and.to.have.lengthOf.at.least(1);\r",
+									"    pm.expect(responseBodyLogin).to.have.property(\"company\");\r",
+									"    pm.expect(responseBodyLogin.company).to.be.a(\"string\").and.to.have.lengthOf.at.least(1);\r",
 									"})\r",
 									""
 								],
@@ -531,8 +548,11 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"packages": {},
-								"type": "text/javascript"
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -692,7 +712,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"// Added script to define the $ variable before using it in the test\r",
+									"\r",
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
 									"});\r",
