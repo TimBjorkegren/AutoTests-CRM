@@ -77,7 +77,9 @@ jobs:
         with:
           dotnet-version: 8.0.x
       - name: Install dotnet project dependencies
-        run: dotnet restore
+        run: |
+          cd crmsystem
+          dotnet restore
       - name: Build/Restore Playwright Project
         run: cd CrmTester.Tests && dotnet build
       - name: Ensure browsers are installed
