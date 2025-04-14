@@ -84,6 +84,10 @@ jobs:
         run: cd CrmTester.Tests && dotnet build
       - name: Ensure browsers are installed
         run: cd CrmTester.Tests && pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
+      - name: Start frontend server
+        run: |
+          cd crmsystem/client
+          nohup npm run dev > vite.log 2>&1 &
       - name: Start server
         run: cd server && nohup dotnet run &
       - name: Run GUI-tests
