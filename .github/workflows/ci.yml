@@ -25,10 +25,14 @@ jobs:
         run: npm install -g newman
 
       - name: Install dotnet project dependencies
-        run: dotnet restore
+        run: |
+          cd crmsystem
+          dotnet restore
 
       - name: Build
-        run: dotnet build
+        run: |
+          cd crmsystem
+          dotnet build
         
       - name: Start Server
         run: cd crmsystem/server && nohup dotnet run &
