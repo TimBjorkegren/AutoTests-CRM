@@ -7,6 +7,17 @@ on:
 jobs:
   api_tests:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: Aqws12aqwsed
+          POSTGRES_DB: crm-testing
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
       - uses: actions/checkout@v4
 
@@ -23,6 +34,16 @@ jobs:
       - name: Install Newman
         run: npm install -g newman
 
+      - name: Install PostgreSQL client
+        run: sudo apt-get install -y postgresql-client
+
+      - name: Load SQL dump
+        run: |
+          # Wait for PostgreSQL to be ready
+          until pg_isready -h localhost -p 5432 -U postgres; do sleep 1; done
+          # Import your SQL dump
+          psql -h localhost -U postgres -d crm-testing -f CmrDatabase.sql
+
       - name: Install dotnet project dependencies
         run: |
           cd crmsystem
@@ -32,28 +53,17 @@ jobs:
         run: |
           cd crmsystem
           dotnet build
-
-      - name: Start Server
-        run: |
-          cd crmsystem/server && nohup dotnet run &
         
-      - name: Wait for the server to start
-        run: |
-          timeout=0
-          until curl --silent --fail http://localhost:3000; do
-            echo "Waiting for server to start..."
-            sleep 5
-            timeout=$((timeout+5))
-            if [ $timeout -ge 60 ]; then
-              echo "Server startup timed out"
-              exit 1
-            fi
-          done
-          echo "Server started successfully!"
+      - name: Start Server
+        run: cd crmsystem/server && nohup dotnet run &
+        env:
+          ConnectionStrings__DefaultConnection: "Server=localhost;Port=5432;Database=crm-testing;User Id=postgres;Password=Aqws12aqwsed;"
+
+      - name: Wait for server to start
+        run: sleep 10
 
       - name: Run API-Tests
-        run: newman run ./api-test/crmsystemet.postman_collection.json --verbose
-
+        run: newman run api-test/crmsystemet.postman_collection.json
 
   gui_tests:
     runs-on: ubuntu-latest
