@@ -7,10 +7,10 @@ namespace PlaywrightTests;
 [TestClass]
 public class DemoTest : PageTest
 {
-    private IPlaywright _playwright;
-    private IBrowser _browser;
-    private IBrowserContext _browserContext;
-    private IPage _page;
+    private IPlaywright? _playwright;
+    private IBrowser? _browser;
+    private IBrowserContext? _browserContext;
+    private IPage? _page;
 
     [TestInitialize]
     public async Task Setup()
