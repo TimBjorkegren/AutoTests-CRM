@@ -40,7 +40,7 @@ jobs:
       - name: Wait for the server to start
         run: |
           timeout=0
-          until curl --silent --fail http://localhost:5000; do
+          until curl --silent --fail http://localhost:3000; do
             echo "Waiting for server to start..."
             sleep 5
             timeout=$((timeout+5))
