@@ -90,5 +90,7 @@ jobs:
           nohup npm run dev > vite.log 2>&1 &
       - name: Start server
         run: cd server && nohup dotnet run &
+      - name: Wait for frontend
+        run: wait-on http://localhost:5173/login
       - name: Run GUI-tests
         run: cd CrmTester.Tests && dotnet test         
