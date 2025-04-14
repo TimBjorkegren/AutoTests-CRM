@@ -54,7 +54,7 @@ jobs:
       - name: Build
         run: |
           cd crmsystem
-          dotnet build /nowarn:CS8600,CS8602,CS8603,CS8604,CS8618
+          dotnet build
         
       - name: Start Server
         run: cd crmsystem/server && nohup dotnet run &
@@ -105,5 +105,5 @@ jobs:
       - name: Run GUI-tests
         run: |
           cd CrmTester.Tests
-          dotnet build /nowarn:CS8600,CS8602,CS8603,CS8604,CS8618
+          dotnet build
           HEADLESS=true dotnet test --filter "TestCategory=GUI"
