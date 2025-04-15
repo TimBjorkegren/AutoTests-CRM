@@ -44,7 +44,7 @@ public class DemoTest : PageTest
         // Klicka på länken till "Shop"
         await _page.GetByRole(AriaRole.Link, new() { Name = "Demo AB" }).ClickAsync();
 
-        await _page.GetByLabel("Your email").FillAsync("tim.bjorkegren@email.com");
+        await _page.GetByLabel("Your email").FillAsync("m@email.com");
 
         await _page.GetByLabel("Title").FillAsync("Test");
 
@@ -77,7 +77,7 @@ public class DemoTest : PageTest
             var text = await card.Locator("div.attributes").TextContentAsync();
 
             //If they found the specific card then update it
-            if (text.Contains("Test Issue 2"))
+            if (text.Contains("Test Issue"))
             {
                 var statusText = await card.Locator("div.attributes").TextContentAsync();
                 if (statusText.Contains("CLOSED"))
@@ -172,7 +172,7 @@ public class DemoTest : PageTest
     public async Task LoginWithNoPasswordShouldNotWork()
     {
         await _page.GotoAsync("http://localhost:5173/login");
-        await _page.GetByPlaceholder("Email").FillAsync("tim.bjorkegren@gmail.com");
+        await _page.GetByPlaceholder("Email").FillAsync("m@email.com");
         await _page.GetByPlaceholder("Password").FillAsync("");
         await _page.GetByRole(AriaRole.Button, new() { Name = "Login" }).ClickAsync();
 
@@ -186,12 +186,12 @@ public class DemoTest : PageTest
     [TestMethod]
     public async Task LoginAsGuest_ToChatt_WithBot_NoPassword_OnlyMail()
     {
-        await _page.GotoAsync("http://localhost:5173/chat/5f1f3181-1cb0-4832-b660-ac1caeeceae8");
+        await _page.GotoAsync("http://localhost:5173/chat/9e5caf19-b637-4f78-9145-a8ac8f5e49f5");
 
-        await _page.GetByPlaceholder("Email").FillAsync("tim.bjorkegren@gmail.com");
+        await _page.GetByPlaceholder("Email").FillAsync("linus@nodehill.com");
         await _page.GetByRole(AriaRole.Button, new() { Name = "Verify" }).ClickAsync();
 
-        var checkForMessage = _page.GetByText("Test for postman tim bjorkegren");
+        var checkForMessage = _page.GetByText("This is just a test.");
 
         Assert.IsTrue(await checkForMessage.IsVisibleAsync());
     }
@@ -278,7 +278,7 @@ public class DemoTest : PageTest
             var card = _page.Locator("div.subjectCard").Nth(i);
             var text = await card.Locator("div.attributes").TextContentAsync();
 
-            if (text.Contains('4'))
+            if (text.Contains('3'))
             {
                 await card.GetByRole(AriaRole.Button, new() { Name = "✎" }).ClickAsync();
                 await _page.Locator("input[name='newName']").FillAsync(randomText);
@@ -290,6 +290,24 @@ public class DemoTest : PageTest
         await _page.WaitForTimeoutAsync(500);
         var newNameSubject = await _page.GetByText(randomText).IsVisibleAsync();
         Assert.IsTrue(newNameSubject, "new subject is visible good job");
+
+        for (int i = 0; i < cardCount; i++)
+        {
+            var card = _page.Locator("div.subjectCard").Nth(i);
+            var text = await card.Locator("div.attributes").TextContentAsync();
+
+            if (text.Contains('3'))
+            {
+                await card.GetByRole(AriaRole.Button, new() { Name = "✎" }).ClickAsync();
+                await _page.Locator("input[name='newName']").FillAsync("Övrigt");
+                var input = _page.Locator("input[name='newName']");
+                await input.PressAsync("Enter");
+                break;
+            }
+        }
+        await _page.WaitForTimeoutAsync(500);
+        var oldNameSubject = await _page.GetByText("Övrigt").IsVisibleAsync();
+        Assert.IsTrue(oldNameSubject, "new subject is visible good job");
     }
 
     [TestMethod]
@@ -321,6 +339,36 @@ public class DemoTest : PageTest
     }
 
     [TestMethod]
+    public async Task AddRandomEmployee()
+    {
+        await _page.GotoAsync("http://localhost:5173/login");
+        await _page.GetByPlaceholder("Email").FillAsync("m@email.com");
+        await _page.GetByPlaceholder("Password").FillAsync("abc123");
+        await _page.GetByRole(AriaRole.Button, new() { Name = "Login" }).ClickAsync();
+
+        await _page.GetByRole(AriaRole.Link, new() { Name = "Employees" }).ClickAsync();
+
+        await _page.GetByRole(AriaRole.Button, new() { Name = "Add Employee" }).ClickAsync();
+
+        _page.Dialog += async (_, dialog) =>
+        {
+            await dialog.AcceptAsync();
+        };
+
+        await _page.Locator("input[name='firstname']").FillAsync("Lars");
+        await _page.Locator("input[name='lastname']").FillAsync("Persson");
+        await _page.Locator("input[name='email']").FillAsync("lars@gmail.com");
+        await _page.Locator("input[name='password']").FillAsync("abc123");
+
+        await _page.Locator("input[value='USER']").ClickAsync();
+        await _page.GetByRole(AriaRole.Button, new() { Name = "Create New Employee" }).ClickAsync();
+        await _page.GetByRole(AriaRole.Link, new() { Name = "Employees" }).ClickAsync();
+
+        var newEmail = await _page.GetByText("lars@gmail.com").IsVisibleAsync();
+        Assert.IsTrue(newEmail, "new email is visible good job");
+    }
+
+    [TestMethod]
     public async Task UpdateAEmployee()
     {
         await _page.GotoAsync("http://localhost:5173/login");
@@ -333,23 +381,20 @@ public class DemoTest : PageTest
         var employeeCards = _page.Locator("div.employeeCard");
 
         var cardCount = await employeeCards.CountAsync();
-        var randomText = "Test-" + Guid.NewGuid().ToString("N").Substring(0, 6);
-        var randomText2 = "Test-" + Guid.NewGuid().ToString("N").Substring(0, 6);
-        var randomEmail = "Test-" + Guid.NewGuid().ToString("N").Substring(0, 6) + "@gmail.com";
 
         for (int i = 0; i < cardCount; i++)
         {
             var card = _page.Locator("div.employeeCard").Nth(i);
             var text = await card.Locator("div.attributes").TextContentAsync();
 
-            if (text.Contains("Tim_bjork"))
+            if (text.Contains("lars@gmail.com"))
             {
                 await card.ClickAsync();
                 await card.GetByRole(AriaRole.Button, new() { Name = "Edit information" })
                     .ClickAsync();
-                await _page.Locator("input[name='firstname']").FillAsync(randomText);
-                await _page.Locator("input[name='lastname']").FillAsync(randomText2);
-                await _page.Locator("input[name='email']").FillAsync(randomEmail);
+                await _page.Locator("input[name='firstname']").FillAsync("Päron");
+                await _page.Locator("input[name='lastname']").FillAsync("Grässon");
+                await _page.Locator("input[name='email']").FillAsync("päron@gmail.com");
 
                 await card.GetByRole(AriaRole.Button, new() { Name = "Update Employee" })
                     .ClickAsync();
@@ -357,12 +402,12 @@ public class DemoTest : PageTest
             }
         }
         await _page.WaitForTimeoutAsync(500);
-        var newEmail = await _page.GetByText(randomEmail).IsVisibleAsync();
+        var newEmail = await _page.GetByText("päron@gmail.com").IsVisibleAsync();
         Assert.IsTrue(newEmail, "new Email is visible good job");
     }
 
     [TestMethod]
-    public async Task AddRandomEmployee()
+    public async Task DeleteNewEmployee()
     {
         await _page.GotoAsync("http://localhost:5173/login");
         await _page.GetByPlaceholder("Email").FillAsync("m@email.com");
@@ -371,42 +416,47 @@ public class DemoTest : PageTest
 
         await _page.GetByRole(AriaRole.Link, new() { Name = "Employees" }).ClickAsync();
 
-        var randomText = "Test-" + Guid.NewGuid().ToString("N").Substring(0, 6);
-        var randomText2 = "Test-" + Guid.NewGuid().ToString("N").Substring(0, 6);
-        var randomEmail = "Test-" + Guid.NewGuid().ToString("N").Substring(0, 6) + "@gmail.com";
-        var randomPassword = "Test-" + Guid.NewGuid().ToString("N").Substring(0, 6);
+        var employeeCards = _page.Locator("div.employeeCard");
 
-        await _page.GetByRole(AriaRole.Button, new() { Name = "Add Employee" }).ClickAsync();
+        var cardCount = await employeeCards.CountAsync();
 
         _page.Dialog += async (_, dialog) =>
         {
             await dialog.AcceptAsync();
         };
 
-        await _page.Locator("input[name='firstname']").FillAsync(randomText);
-        await _page.Locator("input[name='lastname']").FillAsync(randomText2);
-        await _page.Locator("input[name='email']").FillAsync(randomEmail);
-        await _page.Locator("input[name='password']").FillAsync(randomPassword);
+        for (int i = 0; i < cardCount; i++)
+        {
+            var card = _page.Locator("div.employeeCard").Nth(i);
+            var text = await card.Locator("div.attributes").TextContentAsync();
 
-        await _page.Locator("input[value='USER']").ClickAsync();
-        await _page.GetByRole(AriaRole.Button, new() { Name = "Create New Employee" }).ClickAsync();
-        await _page.GetByRole(AriaRole.Link, new() { Name = "Employees" }).ClickAsync();
-
-        var newEmail = await _page.GetByText(randomEmail).IsVisibleAsync();
-        Assert.IsTrue(newEmail, "new email is visible good job");
+            if (text.Contains("päron@gmail.com"))
+            {
+                await card.ClickAsync();
+                await card.GetByRole(AriaRole.Button, new() { Name = "Remove employee" })
+                    .ClickAsync();
+                break;
+            }
+        }
+        await _page.WaitForSelectorAsync(
+            "text=päron@gmail.com",
+            new() { State = WaitForSelectorState.Detached }
+        );
+        var deletedEmployee = await _page.GetByText("päron@gmail.com").IsVisibleAsync();
+        Assert.IsFalse(deletedEmployee, "deleted employee is still visible");
     }
 
     [TestMethod]
     public async Task LoginOnDifferentCompany_ToNotSeEmployee_FromAnotherCompany()
     {
         await _page.GotoAsync("http://localhost:5173/login");
-        await _page.GetByPlaceholder("Email").FillAsync("test@gmail.com");
+        await _page.GetByPlaceholder("Email").FillAsync("m@email.com");
         await _page.GetByPlaceholder("Password").FillAsync("abc123");
         await _page.GetByRole(AriaRole.Button, new() { Name = "Login" }).ClickAsync();
 
         await _page.GetByRole(AriaRole.Link, new() { Name = "Employees" }).ClickAsync();
 
-        var findEmployee = _page.GetByText("m@email.com");
+        var findEmployee = _page.GetByText("test@gmail.com");
         bool isVisible = await findEmployee.IsVisibleAsync();
 
         Assert.IsFalse(isVisible, "Couldn't find the employee from DemoAb");
