@@ -18,11 +18,7 @@ public class DemoTest : PageTest
         _playwright = await Microsoft.Playwright.Playwright.CreateAsync();
 
         _browser = await _playwright.Chromium.LaunchAsync(
-            new BrowserTypeLaunchOptions
-            {
-                Headless = true,
-                SlowMo = 1000, // Lägger in en fördröjning så vi kan se vad som händerr
-            }
+            new BrowserTypeLaunchOptions { Headless = true }
         );
         _browserContext = await _browser.NewContextAsync();
         _page = await _browserContext.NewPageAsync();
@@ -39,7 +35,7 @@ public class DemoTest : PageTest
     [TestMethod]
     public async Task FillTheFormular_ForDemo_AB()
     {
-        await _page.GotoAsync("http://localhost:5173/");
+        await _page.GotoAsync("http://localhost:3000/");
 
         // Klicka på länken till "Shop"
         await _page.GetByRole(AriaRole.Link, new() { Name = "Demo AB" }).ClickAsync();
@@ -50,59 +46,18 @@ public class DemoTest : PageTest
 
         await _page.GetByLabel("Subject").SelectOptionAsync("Skada");
 
+        await _page.Locator("textarea[name='message']").FillAsync("Test for postman");
+
         await _page.GetByRole(AriaRole.Button, new() { Name = "Create issue" }).ClickAsync();
 
         //Was suppose to use the alert that comes up to verify it but it won't show up on the playwright tests
     }
 
     [TestMethod]
-    public async Task LoginAndCloseATicket()
+    public async Task CloseAndReOpenTicket()
     {
         //Login to the account email
-        await _page.GotoAsync("http://localhost:5173/login");
-        await _page.GetByPlaceholder("Email").FillAsync("m@email.com");
-        await _page.GetByPlaceholder("Password").FillAsync("abc123");
-        await _page.GetByRole(AriaRole.Button, new() { Name = "Login" }).ClickAsync();
-
-        await _page.GetByRole(AriaRole.Link, new() { Name = "Issues" }).ClickAsync();
-
-        var issueCards = _page.Locator("div.issueCard");
-
-        var cardCount = await issueCards.CountAsync();
-
-        //Iterate through all the cards
-        for (int i = 0; i < cardCount; i++)
-        {
-            var card = issueCards.Nth(i);
-            var text = await card.Locator("div.attributes").TextContentAsync();
-
-            //If they found the specific card then update it
-            if (text.Contains("Test Issue"))
-            {
-                var statusText = await card.Locator("div.attributes").TextContentAsync();
-                if (statusText.Contains("CLOSED"))
-                {
-                    Console.WriteLine("its already closed :) ");
-                    return;
-                }
-
-                await card.GetByRole(AriaRole.Button).ClickAsync();
-
-                var select = card.Locator("select.stateSelect");
-                await select.SelectOptionAsync(new SelectOptionValue { Value = "CLOSED" });
-
-                await card.GetByRole(AriaRole.Button, new() { Name = "Save" }).ClickAsync();
-
-                return;
-            }
-        }
-    }
-
-    [TestMethod]
-    public async Task LoginAndOpenATicket()
-    {
-        //Login to the account email
-        await _page.GotoAsync("http://localhost:5173/login");
+        await _page.GotoAsync("http://localhost:3000/login");
         await _page.GetByPlaceholder("Email").FillAsync("m@email.com");
         await _page.GetByPlaceholder("Password").FillAsync("abc123");
         await _page.GetByRole(AriaRole.Button, new() { Name = "Login" }).ClickAsync();
@@ -122,56 +77,59 @@ public class DemoTest : PageTest
             //If they found the specific card then update it
             if (text.Contains("Test Issue 2"))
             {
-                var statusText = await card.Locator("div.attributes").TextContentAsync();
-                if (statusText.Contains("OPEN"))
-                {
-                    Console.WriteLine("its already opened :) ");
-                    return;
-                }
-
                 await card.GetByRole(AriaRole.Button).ClickAsync();
 
                 var select = card.Locator("select.stateSelect");
-                await select.SelectOptionAsync(new SelectOptionValue { Value = "OPEN" });
-
+                await select.SelectOptionAsync(new SelectOptionValue { Value = "CLOSED" });
                 await card.GetByRole(AriaRole.Button, new() { Name = "Save" }).ClickAsync();
+                await _page.WaitForTimeoutAsync(500);
 
-                return;
+                var closedStatus = await card.Locator("div.attributes").TextContentAsync();
+                Assert.IsTrue(closedStatus.Contains("CLOSED"), "the issue was not closed");
+
+                //REOPEN
+                await card.GetByRole(AriaRole.Button).ClickAsync();
+                await select.SelectOptionAsync(new SelectOptionValue { Value = "OPEN" });
+                await card.GetByRole(AriaRole.Button, new() { Name = "Save" }).ClickAsync();
+                await _page.WaitForTimeoutAsync(500);
+
+                var reopenStatus = await card.Locator("div.attributes").TextContentAsync();
+                Assert.IsTrue(reopenStatus.Contains("OPEN"), "the issue wasn't reopened");
+                break;
             }
         }
     }
 
-    /*
-        [TestMethod]
-        public async Task RegisterCompanyAccount()
+    [TestMethod]
+    public async Task RegisterCompanyAccount()
+    {
+        await _page.GotoAsync("http://localhost:3000/register");
+
+        await _page.GetByPlaceholder("Email").FillAsync("limpis@gmail.com");
+        await _page.GetByPlaceholder("Password").FillAsync("abc123");
+        await _page.GetByPlaceholder("Username").FillAsync("simba");
+        await _page.GetByPlaceholder("Company").FillAsync("MikroMjuk");
+
+        await _page.GetByRole(AriaRole.Button, new() { Name = "Skapa konto" }).ClickAsync();
+
+        var errorMessageAlert = _page.Locator("text=Company already exists.");
+
+        bool accountAlreadyExist = await errorMessageAlert.IsVisibleAsync();
+
+        if (accountAlreadyExist)
         {
-            await _page.GotoAsync("http://localhost:5173/register");
-    
-            await _page.GetByPlaceholder("Email").FillAsync("tim.bjorkegren@gmail.com");
-            await _page.GetByPlaceholder("Password").FillAsync("abc123");
-            await _page.GetByPlaceholder("Username").FillAsync("timtim");
-            await _page.GetByPlaceholder("Company").FillAsync("MikroMjuk");
-    
-            await _page.GetByRole(AriaRole.Button, new() { Name = "Skapa konto" }).ClickAsync();
-    
-            var errorMessageAlert = _page.Locator("text=Company already exists.");
-    
-            bool accountAlreadyExist = await errorMessageAlert.IsVisibleAsync();
-    
-            if (accountAlreadyExist)
-            {
-                Console.WriteLine("The account already exists");
-            }
-            else
-            {
-                Console.WriteLine("New account was registered");
-            }
-        } */
+            Console.WriteLine("The account already exists");
+        }
+        else
+        {
+            Console.WriteLine("New account was registered");
+        }
+    }
 
     [TestMethod]
     public async Task LoginWithNoPasswordShouldNotWork()
     {
-        await _page.GotoAsync("http://localhost:5173/login");
+        await _page.GotoAsync("http://localhost:3000/login");
         await _page.GetByPlaceholder("Email").FillAsync("m@email.com");
         await _page.GetByPlaceholder("Password").FillAsync("");
         await _page.GetByRole(AriaRole.Button, new() { Name = "Login" }).ClickAsync();
@@ -186,7 +144,7 @@ public class DemoTest : PageTest
     [TestMethod]
     public async Task LoginAsGuest_ToChatt_WithBot_NoPassword_OnlyMail()
     {
-        await _page.GotoAsync("http://localhost:5173/chat/9e5caf19-b637-4f78-9145-a8ac8f5e49f5");
+        await _page.GotoAsync("http://localhost:3000/chat/9e5caf19-b637-4f78-9145-a8ac8f5e49f5");
 
         await _page.GetByPlaceholder("Email").FillAsync("linus@nodehill.com");
         await _page.GetByRole(AriaRole.Button, new() { Name = "Verify" }).ClickAsync();
@@ -197,9 +155,11 @@ public class DemoTest : PageTest
     }
 
     [TestMethod]
-    public async Task LoginAsAdminAndCreateANewSubject()
+    public async Task LoginAsAdminAndCreateANewSubjectAndRemoveSubject()
     {
-        await _page.GotoAsync("http://localhost:5173/login");
+        string subjectName = "Teknisk Hjälp";
+
+        await _page.GotoAsync("http://localhost:3000/login");
         await _page.GetByPlaceholder("Email").FillAsync("m@email.com");
         await _page.GetByPlaceholder("Password").FillAsync("abc123");
         await _page.GetByRole(AriaRole.Button, new() { Name = "Login" }).ClickAsync();
@@ -210,34 +170,16 @@ public class DemoTest : PageTest
         await _page.GetByRole(AriaRole.Button, new() { Name = "New Subject" }).ClickAsync();
         await _page.GetByPlaceholder("New Subject").FillAsync("Teknisk Hjälp");
         await _page.GetByRole(AriaRole.Button, new() { Name = "Save" }).ClickAsync();
-        var newlyAddedSubject = _page.Locator("text=Teknisk Hjälp");
-        string subjectName = "Teknisk Hjälp";
 
-        var errorMessageLocator = _page.GetByText("undefined");
-
-        if (await errorMessageLocator.IsVisibleAsync())
-        {
-            Console.WriteLine("subject already exist");
-            Assert.IsTrue(true);
-            return;
-        }
+        await _page.WaitForSelectorAsync(
+            "text={subjectName}",
+            new() { State = WaitForSelectorState.Detached }
+        );
 
         var newSubject = _page.Locator($"text={subjectName}");
-        Assert.IsTrue(await newSubject.IsVisibleAsync(), "new subject was added");
-    }
-
-    [TestMethod]
-    public async Task LoginAsAdminAndRemoveSubject()
-    {
-        await _page.GotoAsync("http://localhost:5173/login");
-        await _page.GetByPlaceholder("Email").FillAsync("m@email.com");
-        await _page.GetByPlaceholder("Password").FillAsync("abc123");
-        await _page.GetByRole(AriaRole.Button, new() { Name = "Login" }).ClickAsync();
-
-        await _page.GetByRole(AriaRole.Link, new() { Name = "Form subjects" }).ClickAsync();
+        Assert.IsTrue(await newSubject.IsVisibleAsync());
 
         var subjectCards = _page.Locator("div.subjectCard");
-
         var cardCount = await subjectCards.CountAsync();
 
         //Iterate through all the cards
@@ -247,21 +189,26 @@ public class DemoTest : PageTest
             var text = await card.Locator("div.attributes").TextContentAsync();
 
             //If they found the specific card then remove it
-            if (text.Contains("Teknisk Hjälp"))
+            if (text.Contains(subjectName))
             {
                 await card.GetByRole(AriaRole.Button, new() { Name = "✖" }).ClickAsync();
                 break;
             }
         }
-        await _page.WaitForTimeoutAsync(500);
-        var isSubjectStillVisible = await _page.GetByText("Teknisk Hjälp").IsVisibleAsync();
-        Assert.IsFalse(isSubjectStillVisible, "subject is still visible");
+
+        await _page.WaitForSelectorAsync(
+            $"text={subjectName}",
+            new() { State = WaitForSelectorState.Detached }
+        );
+
+        bool isSubjectStillVisible = await _page.Locator($"text={subjectName}").IsVisibleAsync();
+        Assert.IsFalse(isSubjectStillVisible, "subject was not deleted");
     }
 
     [TestMethod]
     public async Task EditATask()
     {
-        await _page.GotoAsync("http://localhost:5173/login");
+        await _page.GotoAsync("http://localhost:3000/login");
         await _page.GetByPlaceholder("Email").FillAsync("m@email.com");
         await _page.GetByPlaceholder("Password").FillAsync("abc123");
         await _page.GetByRole(AriaRole.Button, new() { Name = "Login" }).ClickAsync();
@@ -313,7 +260,7 @@ public class DemoTest : PageTest
     [TestMethod]
     public async Task GoToUrlWithoutlogginAndSeIssues()
     {
-        await _page.GotoAsync("http://localhost:5173/employee/issues");
+        await _page.GotoAsync("http://localhost:3000/employee/issues");
 
         var getLoadingMessage = _page.GetByText("Laddar...");
         await Expect(getLoadingMessage).ToBeVisibleAsync(new() { Timeout = 5000 });
@@ -327,21 +274,21 @@ public class DemoTest : PageTest
     [TestMethod]
     public async Task GoToTwoDifferentCompanies()
     {
-        await _page.GotoAsync("http://localhost:5173/");
+        await _page.GotoAsync("http://localhost:3000/");
         await _page.GetByRole(AriaRole.Link, new() { Name = "Demo AB" }).ClickAsync();
         var getTitleDemoABForm = _page.GetByText("Demo AB issue form.");
         Assert.IsTrue(await getTitleDemoABForm.IsVisibleAsync(), "Demo AB was loading in");
 
         await _page.GetByRole(AriaRole.Link, new() { Name = "Home" }).ClickAsync();
         await _page.GetByRole(AriaRole.Link, new() { Name = "Test AB" }).ClickAsync();
-        var getTitleTestABForm = _page.GetByText("Test AB issue form.");
-        Assert.IsTrue(await getTitleTestABForm.IsVisibleAsync(), "Test AB was loading in");
+        var getTitleTestABForm = _page.GetByText("No Company was found!");
+        Assert.IsTrue(await getTitleTestABForm.IsVisibleAsync(), "Worked");
     }
 
     [TestMethod]
-    public async Task AddRandomEmployee()
+    public async Task AddEmployeeAndUpdateAndDelete()
     {
-        await _page.GotoAsync("http://localhost:5173/login");
+        await _page.GotoAsync("http://localhost:3000/login");
         await _page.GetByPlaceholder("Email").FillAsync("m@email.com");
         await _page.GetByPlaceholder("Password").FillAsync("abc123");
         await _page.GetByRole(AriaRole.Button, new() { Name = "Login" }).ClickAsync();
@@ -364,22 +311,9 @@ public class DemoTest : PageTest
         await _page.GetByRole(AriaRole.Button, new() { Name = "Create New Employee" }).ClickAsync();
         await _page.GetByRole(AriaRole.Link, new() { Name = "Employees" }).ClickAsync();
 
-        var newEmail = await _page.GetByText("lars@gmail.com").IsVisibleAsync();
-        Assert.IsTrue(newEmail, "new email is visible good job");
-    }
-
-    [TestMethod]
-    public async Task UpdateAEmployee()
-    {
-        await _page.GotoAsync("http://localhost:5173/login");
-        await _page.GetByPlaceholder("Email").FillAsync("m@email.com");
-        await _page.GetByPlaceholder("Password").FillAsync("abc123");
-        await _page.GetByRole(AriaRole.Button, new() { Name = "Login" }).ClickAsync();
-
-        await _page.GetByRole(AriaRole.Link, new() { Name = "Employees" }).ClickAsync();
+        await _page.WaitForSelectorAsync("text=lars@gmail.com");
 
         var employeeCards = _page.Locator("div.employeeCard");
-
         var cardCount = await employeeCards.CountAsync();
 
         for (int i = 0; i < cardCount; i++)
@@ -394,62 +328,51 @@ public class DemoTest : PageTest
                     .ClickAsync();
                 await _page.Locator("input[name='firstname']").FillAsync("Päron");
                 await _page.Locator("input[name='lastname']").FillAsync("Grässon");
-                await _page.Locator("input[name='email']").FillAsync("päron@gmail.com");
+                await _page.Locator("input[name='email']").FillAsync("paron@gmail.com");
 
-                await card.GetByRole(AriaRole.Button, new() { Name = "Update Employee" })
+                await _page
+                    .GetByRole(AriaRole.Button, new() { Name = "Update Employee" })
                     .ClickAsync();
                 break;
             }
         }
-        await _page.WaitForTimeoutAsync(500);
-        var newEmail = await _page.GetByText("päron@gmail.com").IsVisibleAsync();
+
+        await _page.WaitForSelectorAsync("text=paron@gmail.com");
+
+        var newEmail = await _page.GetByText("paron@gmail.com").IsVisibleAsync();
         Assert.IsTrue(newEmail, "new Email is visible good job");
-    }
 
-    [TestMethod]
-    public async Task DeleteNewEmployee()
-    {
-        await _page.GotoAsync("http://localhost:5173/login");
-        await _page.GetByPlaceholder("Email").FillAsync("m@email.com");
-        await _page.GetByPlaceholder("Password").FillAsync("abc123");
-        await _page.GetByRole(AriaRole.Button, new() { Name = "Login" }).ClickAsync();
+        var updateEmployeeCards = _page.Locator("div.employeeCard");
+        var updateCardCount = await employeeCards.CountAsync();
 
-        await _page.GetByRole(AriaRole.Link, new() { Name = "Employees" }).ClickAsync();
-
-        var employeeCards = _page.Locator("div.employeeCard");
-
-        var cardCount = await employeeCards.CountAsync();
-
-        _page.Dialog += async (_, dialog) =>
+        for (int i = 0; i < updateCardCount; i++)
         {
-            await dialog.AcceptAsync();
-        };
-
-        for (int i = 0; i < cardCount; i++)
-        {
-            var card = _page.Locator("div.employeeCard").Nth(i);
+            var card = updateEmployeeCards.Nth(i);
             var text = await card.Locator("div.attributes").TextContentAsync();
 
-            if (text.Contains("päron@gmail.com"))
+            if (text.Contains("paron@gmail.com"))
             {
                 await card.ClickAsync();
-                await card.GetByRole(AriaRole.Button, new() { Name = "Remove employee" })
+                await _page
+                    .GetByRole(AriaRole.Button, new() { Name = "Remove employee" })
                     .ClickAsync();
                 break;
             }
         }
         await _page.WaitForSelectorAsync(
-            "text=päron@gmail.com",
+            "text=paron@gmail.com",
             new() { State = WaitForSelectorState.Detached }
         );
-        var deletedEmployee = await _page.GetByText("päron@gmail.com").IsVisibleAsync();
-        Assert.IsFalse(deletedEmployee, "deleted employee is still visible");
+        Assert.IsFalse(
+            await _page.GetByText("paron@gmail.com").IsVisibleAsync(),
+            "deleted employee is still visible"
+        );
     }
 
     [TestMethod]
     public async Task LoginOnDifferentCompany_ToNotSeEmployee_FromAnotherCompany()
     {
-        await _page.GotoAsync("http://localhost:5173/login");
+        await _page.GotoAsync("http://localhost:3000/login");
         await _page.GetByPlaceholder("Email").FillAsync("m@email.com");
         await _page.GetByPlaceholder("Password").FillAsync("abc123");
         await _page.GetByRole(AriaRole.Button, new() { Name = "Login" }).ClickAsync();
