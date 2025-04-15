@@ -3,21 +3,9 @@ name: CI/CD Test
 on:
   push:
     branches: ["main"]
-
 jobs:
   api_tests:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_PASSWORD: Aqws12aqwsed
-          POSTGRES_DB: crm-testing
-          POSTGRES_USER: postgres
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
     steps:
       - uses: actions/checkout@v4
 
@@ -26,7 +14,7 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Setup dotnet
+      - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
@@ -34,38 +22,20 @@ jobs:
       - name: Install Newman
         run: npm install -g newman
 
-      - name: Install PostgreSQL client
-        run: sudo apt-get install -y postgresql-client
+      - name: Restore dotnet dependencies
+        run: dotnet restore
+        working-directory: ./crmsystem
 
-      - name: Load SQL dump
-        env:
-          PGPASSWORD: Aqws12aqwsed
-        run: |
-          # Wait for PostgreSQL to be ready
-          until pg_isready -h localhost -p 5432 -U postgres; do sleep 1; done
-          # Import your SQL dump
-          psql -h localhost -p 5432 -U postgres -d crm-testing -f CmrDatabase.sql
+      - name: Build dotnet project
+        run: dotnet build
+        working-directory: ./crmsystem
 
-      - name: Install dotnet project dependencies
-        run: |
-          cd crmsystem
-          dotnet restore
-
-      - name: Build
-        run: |
-          cd crmsystem
-          dotnet build
-        
       - name: Start Server
-        run: cd crmsystem/server && nohup dotnet run &
-        env:
-          ConnectionStrings__DefaultConnection: "Server=localhost;Port=5432;Database=crm-testing;User Id=postgres;Password=Aqws12aqwsed;"
+        run: nohup dotnet run &
+        working-directory: ./crmsystem/server
 
-      - name: Wait for server to start
-        run: sleep 10
-
-      - name: Run API-Tests
-        run: newman run api-test/crmsystemet.postman_collection.json
+      - name: Run API Tests
+        run: newman run ./api-test/crmsystemet.postman_collection.json
 
   gui_tests:
     runs-on: ubuntu-latest

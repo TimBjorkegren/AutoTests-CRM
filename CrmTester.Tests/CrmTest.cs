@@ -37,7 +37,6 @@ public class DemoTest : PageTest
     }
 
     [TestMethod]
-    [TestCategory("GUI")]
     public async Task FillTheFormular_ForDemo_AB()
     {
         await _page.GotoAsync("http://localhost:5173/");
@@ -57,7 +56,6 @@ public class DemoTest : PageTest
     }
 
     [TestMethod]
-    [TestCategory("GUI")]
     public async Task LoginAndCloseATicket()
     {
         //Login to the account email
@@ -101,7 +99,6 @@ public class DemoTest : PageTest
     }
 
     [TestMethod]
-    [TestCategory("GUI")]
     public async Task LoginAndOpenATicket()
     {
         //Login to the account email
@@ -172,7 +169,6 @@ public class DemoTest : PageTest
         } */
 
     [TestMethod]
-    [TestCategory("GUI")]
     public async Task LoginWithNoPasswordShouldNotWork()
     {
         await _page.GotoAsync("http://localhost:5173/login");
@@ -188,7 +184,6 @@ public class DemoTest : PageTest
     }
 
     [TestMethod]
-    [TestCategory("GUI")]
     public async Task LoginAsGuest_ToChatt_WithBot_NoPassword_OnlyMail()
     {
         await _page.GotoAsync("http://localhost:5173/chat/5f1f3181-1cb0-4832-b660-ac1caeeceae8");
@@ -202,7 +197,6 @@ public class DemoTest : PageTest
     }
 
     [TestMethod]
-    [TestCategory("GUI")]
     public async Task LoginAsAdminAndCreateANewSubject()
     {
         await _page.GotoAsync("http://localhost:5173/login");
@@ -233,7 +227,6 @@ public class DemoTest : PageTest
     }
 
     [TestMethod]
-    [TestCategory("GUI")]
     public async Task LoginAsAdminAndRemoveSubject()
     {
         await _page.GotoAsync("http://localhost:5173/login");
@@ -266,7 +259,6 @@ public class DemoTest : PageTest
     }
 
     [TestMethod]
-    [TestCategory("GUI")]
     public async Task EditATask()
     {
         await _page.GotoAsync("http://localhost:5173/login");
@@ -301,7 +293,6 @@ public class DemoTest : PageTest
     }
 
     [TestMethod]
-    [TestCategory("GUI")]
     public async Task GoToUrlWithoutlogginAndSeIssues()
     {
         await _page.GotoAsync("http://localhost:5173/employee/issues");
@@ -316,7 +307,6 @@ public class DemoTest : PageTest
     }
 
     [TestMethod]
-    [TestCategory("GUI")]
     public async Task GoToTwoDifferentCompanies()
     {
         await _page.GotoAsync("http://localhost:5173/");
@@ -331,7 +321,6 @@ public class DemoTest : PageTest
     }
 
     [TestMethod]
-    [TestCategory("GUI")]
     public async Task UpdateAEmployee()
     {
         await _page.GotoAsync("http://localhost:5173/login");
@@ -373,7 +362,6 @@ public class DemoTest : PageTest
     }
 
     [TestMethod]
-    [TestCategory("GUI")]
     public async Task AddRandomEmployee()
     {
         await _page.GotoAsync("http://localhost:5173/login");
@@ -409,7 +397,6 @@ public class DemoTest : PageTest
     }
 
     [TestMethod]
-    [TestCategory("GUI")]
     public async Task LoginOnDifferentCompany_ToNotSeEmployee_FromAnotherCompany()
     {
         await _page.GotoAsync("http://localhost:5173/login");
