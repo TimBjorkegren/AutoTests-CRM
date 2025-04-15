@@ -47,12 +47,15 @@ jobs:
         with:
           dotnet-version: 8.0.x
       - name: Install dotnet project dependencies
-        run: dotnet restore
+        run: |
+          cd crmsystem/server
+          dotnet restore
       - name: Build/Restore Playwright Project
         run: cd CrmTester.Tests && dotnet build
       - name: Ensure browsers are installed
         run: cd CrmTester.Tests && pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
       - name: Start server
-        run: cd server && nohup dotnet run &
+        run: |
+          cd crmsystem/server && nohup dotnet run &
       - name: Run GUI-tests
         run: cd CrmTester.Tests && dotnet test
