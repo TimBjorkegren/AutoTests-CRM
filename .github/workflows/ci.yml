@@ -37,9 +37,9 @@ jobs:
       - name: Run API Tests
         run: newman run ./api-test/crmsystemet.postman_collection.json
 
-gui_tests:
+  gui_tests:
     runs-on: ubuntu-latest
-    needs: api_tests # Kör endast om api testerna går igenom
+    needs: api_tests # Kör endast om api testerna går igenomn
     steps:
       - uses: actions/checkout@v4
       - name: Setup dotnet
