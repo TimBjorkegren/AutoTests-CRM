@@ -59,3 +59,18 @@ jobs:
           cd crmsystem/server && nohup dotnet run &
       - name: Run GUI-tests
         run: cd CrmTester.Tests && dotnet test
+
+  deploy:
+    name: Deploy to Server
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy App
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: | 
+            cd /srv/www/halmstad/tim 
+            git clone https://github.com/TimBjorkegren/AutoTests-CRM.git    
