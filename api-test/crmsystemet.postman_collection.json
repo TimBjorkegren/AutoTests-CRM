@@ -45,7 +45,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"Email\": \"no@email.com\",\r\n    \"Password\": \"abc123\"\r\n}",
+							"raw": "{\r\n    \"Email\": \"johnupdated@example.com\",\r\n    \"Password\": \"abc123\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -142,7 +142,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"Email\": \"testlol@gmai.com\",\r\n    \"ChatId\": \"847f9210-0b52-43c7-b781-51d9cdb698a9\"\r\n}",
+							"raw": "{\r\n    \"Email\": \"linus@nodehill.com\",\r\n    \"ChatId\": \"9e5caf19-b637-4f78-9145-a8ac8f5e49f5\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -599,7 +599,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"Firstname\": \"Kalle\",\r\n  \"Lastname\": \"Bjork\",\r\n  \"Email\": \"emailtest@gmail.com\",\r\n  \"Role\": \"ADMIN\"\r\n}\r\n",
+							"raw": "{\r\n  \"Firstname\": \"John\",\r\n  \"Lastname\": \"Updated\",\r\n  \"Email\": \"johnupdated@example.com\",\r\n  \"Role\": \"USER\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -683,7 +683,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"Email\": \"tim.bjorkegren@gmail.com\",\r\n    \"Title\": \"Test for postman TEST1111\",\r\n    \"Subject\": \"Övrigt\",\r\n    \"Message\": \"Test for postman tim bjorkegren\"\r\n}",
+							"raw": "{\r\n    \"Email\": \"limpan@gmail.com\",\r\n    \"Title\": \"Test for postman TEST\",\r\n    \"Subject\": \"Övrigt\",\r\n    \"Message\": \"Test for postman\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -874,13 +874,20 @@
 								"type": "text/javascript",
 								"packages": {}
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"packages": {},
+								"type": "text/javascript"
+							}
 						}
 					],
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:3000/api/issues/aae0fb2a-6b8a-4d96-8b69-65567efbdfab/messages",
+							"raw": "http://localhost:3000/api/issues/95174724-b419-457e-b2d9-1cfdb0e382f3/messages",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -889,7 +896,7 @@
 							"path": [
 								"api",
 								"issues",
-								"aae0fb2a-6b8a-4d96-8b69-65567efbdfab",
+								"95174724-b419-457e-b2d9-1cfdb0e382f3",
 								"messages"
 							]
 						}
