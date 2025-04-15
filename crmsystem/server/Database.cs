@@ -6,11 +6,11 @@ using Npgsql;
 
 public class Database
 {
-    private readonly string _host = "localhost";
+    private readonly string _host = "217.76.56.135";
     private readonly string _port = "5432";
     private readonly string _username = "postgres";
-    private readonly string _password = "Aqws12aqwsed";
-    private readonly string _database = "crm-testing";
+    private readonly string _password = "FlickeringCustomerMoves29";
+    private readonly string _database = "crmdb";
 
     private NpgsqlDataSource _connection;
 
