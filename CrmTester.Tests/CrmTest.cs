@@ -44,7 +44,7 @@ public class DemoTest : PageTest
 
         await _page.GetByLabel("Title").FillAsync("Test");
 
-        await _page.GetByLabel("Subject").SelectOptionAsync("Skada");
+        await _page.GetByLabel("Subject").SelectOptionAsync("skada");
 
         await _page.Locator("textarea[name='message']").FillAsync("Test for postman");
 
@@ -258,14 +258,14 @@ public class DemoTest : PageTest
             if (text.Contains('3'))
             {
                 await card.GetByRole(AriaRole.Button, new() { Name = "✎" }).ClickAsync();
-                await _page.Locator("input[name='newName']").FillAsync("Övrigt");
+                await _page.Locator("input[name='newName']").FillAsync("Reklamation");
                 var input = _page.Locator("input[name='newName']");
                 await input.PressAsync("Enter");
                 break;
             }
         }
         await _page.WaitForTimeoutAsync(500);
-        var oldNameSubject = await _page.GetByText("Övrigt").IsVisibleAsync();
+        var oldNameSubject = await _page.GetByText("Reklamation").IsVisibleAsync();
         Assert.IsTrue(oldNameSubject, "new subject is visible good job");
     }
 
