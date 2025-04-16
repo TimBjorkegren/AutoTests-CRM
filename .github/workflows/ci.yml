@@ -72,5 +72,6 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           script: | 
-            cd /srv/www/halmstad/tim 
-            git clone https://github.com/TimBjorkegren/AutoTests-CRM.git    
+            cd /srv/www/halmstad/tim/AutoTests-CRM
+            git pull
+    
