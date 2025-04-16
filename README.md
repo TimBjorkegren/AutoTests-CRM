@@ -3,7 +3,6 @@
 Här hittar du dokumentationen som hör till projektet:
 
 - 📝 **Kunskap**  
-
   [Kunskaps frågor](https://docs.google.com/document/d/1XDmcM_uKoll67uFEuAj3PnQzp-gm8Pp5p3HmzqYmkFw/edit?usp=sharing)
 
 - 🔍 **Förstudie**  
