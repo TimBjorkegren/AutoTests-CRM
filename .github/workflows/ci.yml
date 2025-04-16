@@ -39,7 +39,7 @@ jobs:
 
   gui_tests:
     runs-on: ubuntu-latest
-    needs: api_tests # Kör endast om api testerna går igenomn
+    needs: api_tests # Kör endast om api testerna går igenomns
     steps:
       - uses: actions/checkout@v4
       - name: Setup dotnet
